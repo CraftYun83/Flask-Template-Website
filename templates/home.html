@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>FlaskTest - Index</title>
+    <title>Flask Test - Home</title>
   </head>
   <body>
     <style>
@@ -20,7 +20,6 @@
         
         }
 
-      /* Style the links inside the navigation bar */
       .topnav a {
         float: left;
         color: #f2f2f2;
@@ -40,63 +39,13 @@
       .topnav a.active {
         background-color: #04AA6D;
         color: white;
-      }
-    </style>
+      }</style>
+
     <div class="topnav">
-      <a class="active" href="/">Index</a>
+      <a class="active" href="/logout">Logout</a>
       <a href="/login">Login</a>
       <a href="/register">Register</a>
     </div>
-    <script>
-      if (document.cookie.includes("nli=true")) {
-
-        var cookies = document.cookie.split(";");
-
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i];
-            var eqPos = cookie.indexOf("=");
-            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        }
-        alert("You weren't logged in!")
-
-      } if (document.cookie.includes("wc=true")) {
-
-        var cookies = document.cookie.split(";");
-
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i];
-            var eqPos = cookie.indexOf("=");
-            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        }
-        alert("Wrong credentials!");
-
-      } if (document.cookie.includes("ae=true")) {
-
-        var cookies = document.cookie.split(";");
-
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i];
-            var eqPos = cookie.indexOf("=");
-            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        }
-        alert("This account already exists");
-
-      } if (document.cookie.includes("dne=true")) {
-
-        var cookies = document.cookie.split(";");
-
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i];
-            var eqPos = cookie.indexOf("=");
-            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        }
-        alert("This account does not exist!");
-
-      }
-    </script>
+    <h1>Hello! You are now signed in!!!!</h1>
   </body>
 </html>
