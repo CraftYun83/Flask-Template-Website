@@ -1,9 +1,11 @@
 from flask import Flask, request, render_template, redirect
+import random
+import string
 from pymongo import MongoClient
 from cryptography.fernet import Fernet
 
-cluster = MongoClient("mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000")
-collection = cluster.get_database("FlaskTest").get_collection("credentials")
+cluster = MongoClient("<DATABASE URL>")
+collection = cluster.get_database("Flask").get_collection("credentials")
 app = Flask(__name__)
 key = Fernet.generate_key()
 cipher_suite = Fernet(key)
@@ -30,7 +32,9 @@ def login_request():
     username = request.form['username']
     password = request.form['password']
     if collection.count_documents({"username": username}) == 0:
-        return "This account does not exist!"
+      response = redirect("/")
+      response.set_cookie("dne", b"true")
+      return response
     if collection.find_one({"username": username})["password"] == password:
         response = redirect("/home")
         response.set_cookie("li", bytes(True))
@@ -40,7 +44,9 @@ def login_request():
         response.set_cookie("pw", cipher_suite.encrypt(password.encode("utf-8")).decode("utf-8"))
         return response
     else:
-        return "Wrong credentials!"
+      response = redirect("/")
+      response.set_cookie("wc", b"true")
+      return response
 
 @app.route('/register')
 def register():
@@ -51,10 +57,12 @@ def register_request():
     email = request.form['email']
     username = request.form['username']
     password = request.form['password']
-    posts = collection.find({"username": username})
     if collection.count_documents({"username": username}) == 1:
-        return "An account with this username already exists!"
-    collection.insert_one({"email": email, "username": username, "password": password})
+      response = redirect("/")
+      response.set_cookie("ae", b"true")
+      return response
+      
+    collection.insert_one({"_id": str(''.join(random.choices(string.ascii_uppercase + string.digits + string.ascii_lowercase, k = 16))), "email": email, "username": username, "password": password})
     response = redirect("/home")
     response.set_cookie("li", bytes(True))
     response.set_cookie("hb", "aGFtYnVyZ2Vy".encode("utf-8"))
@@ -72,9 +80,16 @@ def home():
         if collection.count_documents({"username": username, "password": password}) == 0:
             return "Did you really try forge cookies????"
         elif collection.count_documents({"username": username, "password": password}) == 1:
-            return f"Hello! {username}, you are now signed in!"
-    except Exception as e:
-        return "You are NOT logged in!"
+            return render_template("home.html")
+    except Exception:
+        response = redirect("/")
+        response.set_cookie("li", b"", expires=0)
+        response.set_cookie("hb", b"", expires=0)
+        response.set_cookie("ck", b"", expires=0)
+        response.set_cookie("un", b"", expires=0)
+        response.set_cookie("pw", b"", expires=0)
+        response.set_cookie("nli", b"true")
+        return response
 
 @app.route("/logout")
 def logout():
@@ -93,7 +108,14 @@ def logout():
             response.set_cookie("pw", b"", expires=0)
             return response
     except Exception:
-        return "You aren't even signed in..."
+        response = redirect("/")
+        response.set_cookie("li", b"", expires=0)
+        response.set_cookie("hb", b"", expires=0)
+        response.set_cookie("ck", b"", expires=0)
+        response.set_cookie("un", b"", expires=0)
+        response.set_cookie("pw", b"", expires=0)
+        response.set_cookie("nli", b"true")
+        return response
 
 @app.route("/delete")
 def delete():
@@ -113,6 +135,13 @@ def delete():
             response.set_cookie("pw", b"", expires=0)
             return response
     except Exception:
-        return "You aren't even signed in..."
+        response = redirect("/")
+        response.set_cookie("li", b"", expires=0)
+        response.set_cookie("hb", b"", expires=0)
+        response.set_cookie("ck", b"", expires=0)
+        response.set_cookie("un", b"", expires=0)
+        response.set_cookie("pw", b"", expires=0)
+        response.set_cookie("nli", b"true")
+        return response
 
-app.run(debug=True)
+app.run(host="0.0.0.0", debug=True)
